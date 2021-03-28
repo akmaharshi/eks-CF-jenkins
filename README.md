@@ -34,11 +34,3 @@ This repository contains the following files:
     ~~~bash
     ./up.sh --region us-east-2
     ~~~
-
-#### Note
-
-Any arguments that you pass to `up.sh` will be forwarded to the AWS CLI commands within the script. Thus, it is possible to specify an explicit region fo the cluster as follows:
-
-~~~bash
-./up.sh --region us-east-2
-~~~
