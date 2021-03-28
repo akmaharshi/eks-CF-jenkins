@@ -31,7 +31,7 @@ Mappings:
     us-east-1:
       Standard: ami-0a0b913ef3249b655
     us-east-2:
-      Standard: ami-0958a76db2d150238
+      Standard: ami-076cfc980e4382759
     us-west-2:
       Standard: ami-0f54a2f7d2e9c88b3
     eu-west-1:
@@ -128,7 +128,7 @@ Resources:
     Type: AWS::EKS::Cluster
     Properties:
       Name: !Ref AWS::StackName
-      Version: "1.10"
+      Version: "1.18"
       RoleArn: !GetAtt ControlPlaneRole.Arn
       ResourcesVpcConfig:
         SecurityGroupIds:
@@ -239,58 +239,6 @@ Resources:
       IpProtocol: tcp
       FromPort: 443
       ToPort: 443
-
-  #============================================================================#
-  # Worker nodes (auto-scaling group)
-  #============================================================================#
-
-  WorkerNodesAutoScalingGroup:
-    Type: AWS::AutoScaling::AutoScalingGroup
-    UpdatePolicy:
-      AutoScalingRollingUpdate:
-        MinInstancesInService: 1
-        MaxBatchSize: 1
-    Properties:
-      LaunchConfigurationName: !Ref WorkerNodesLaunchConfiguration
-      MinSize: !Ref NumWorkerNodes
-      MaxSize: !Ref NumWorkerNodes
-      VPCZoneIdentifier:
-        - !Ref Subnet1
-        - !Ref Subnet2
-      Tags:
-        - Key: Name
-          Value: !Sub "${AWS::StackName}-WorkerNodesAutoScalingGroup"
-          PropagateAtLaunch: true
-        # Without this tag, worker nodes are unable to join the cluster:
-        - Key: !Sub "kubernetes.io/cluster/${ControlPlane}"
-          Value: "owned"
-          PropagateAtLaunch: true
-
-  WorkerNodesLaunchConfiguration:
-    Type: AWS::AutoScaling::LaunchConfiguration
-    # Wait until cluster is ready before launching worker nodes
-    DependsOn: ControlPlane
-    Properties:
-      AssociatePublicIpAddress: true
-      IamInstanceProfile: !Ref WorkerNodesInstanceProfile
-      ImageId: !FindInMap
-        - EksAmiIds
-        - !Ref AWS::Region
-        - Standard
-      InstanceType: !Ref WorkerNodesInstanceType
-      KeyName: !Ref KeyPairName
-      SecurityGroups:
-        - !Ref WorkerNodesSecurityGroup
-      UserData:
-        Fn::Base64: !Sub |
-            #!/bin/bash
-            set -o xtrace
-            /etc/eks/bootstrap.sh ${ControlPlane}
-            /opt/aws/bin/cfn-signal \
-                            --exit-code $? \
-                            --stack  ${AWS::StackName} \
-                            --resource NodeGroup  \
-                            --region ${AWS::Region}
 
   WorkerNodesInstanceProfile:
     Type: AWS::IAM::InstanceProfile
