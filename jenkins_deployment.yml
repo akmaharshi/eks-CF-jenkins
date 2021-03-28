@@ -6,9 +6,7 @@ metadata:
     app: jenkins
   name: jenkins-deployment
 spec:
-  progressDeadlineSeconds: 2147483647
-  replicas: 1
-  revisionHistoryLimit: 2147483647
+  replicas: 2 
   selector:
     matchLabels:
       app: jenkins
@@ -19,7 +17,6 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: jenkins
     spec:
