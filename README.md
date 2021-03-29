@@ -40,11 +40,10 @@ This repository contains the following files:
     kubectl get nodes
     ~~~
 ### Create Jenkins containers
+
+  - Create Jenkins pods and services:
     ~~~bash
     kubectl apply -f jenkins_deployment.yml
-    ~~~
-    
-    ~~~bash
     kubectl apply -f jenkins_service.yml
     ~~~
     
