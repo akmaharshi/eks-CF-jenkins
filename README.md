@@ -47,6 +47,11 @@ This repository contains the following files:
     kubectl apply -f jenkins_service.yml
     ~~~
     
+  - Make sure the required jenkins pods are in ready state:
+    ~~~bash
+    kubectl get pods
+    ~~~    
+    
   - Copy the public ip from the below output and open Jenkins:
     ~~~bash
     kubectl get svc
