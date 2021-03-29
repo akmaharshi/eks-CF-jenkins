@@ -34,3 +34,29 @@ This repository contains the following files:
     ~~~bash
     ./up.sh --region us-east-2
     ~~~
+    
+3. Verify:
+     ~~~bash
+    kubectl get nodes
+    ~~~
+### Create Jenkins containers
+    ~~~bash
+    kubectl apply -f jenkins_deployment.yml
+    ~~~
+    
+    ~~~bash
+    kubectl apply -f jenkins_service.yml
+    ~~~
+    
+  - Copy the public ip from the below output and open Jenkins:
+    ~~~bash
+    kubectl get svc
+    ~~~
+    
+  - Access Jenkins POD and get the jenkins initial password:
+    ~~~bash
+    kubectl exec -it <pod name> bash
+    cat /var/lib/jenkins/secrets/initialpassword
+    ~~~
+  NOTE: Copy the output of the cat command and complete the initial configuration of the jenkins master
+  
